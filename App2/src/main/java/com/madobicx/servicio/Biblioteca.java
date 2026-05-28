@@ -4,6 +4,7 @@ import com.madobicx.modelo.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.*;
 
 public class Biblioteca {
 
@@ -78,18 +79,25 @@ public class Biblioteca {
         }
         return multa;
     }
-
     public void listaLibros(){
-        System.out.println("Libros: ");
-        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %n", "ISBN", "TITULO", "AUTOR", "ESTADO");
+        listaLibros(System.out);
+    }
+
+    public void listaLibros(PrintStream out){
+        out.println("Libros: ");
+        out.printf("| %-15s | %-15s | %-15s | %-15s | %n", "ISBN", "TITULO", "AUTOR", "ESTADO");
         for(Libro l : libros){
-            System.out.println(l.toString());
+            out.println(l.toString());
         }
     }
 
     public void listadoLibrosPrestados(){
-        System.out.println("LibrosPrestados: ");
-        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %n", "ISBN", "TITULO", "AUTOR", "ESTADO");
+        listadoLibrosPrestados(System.out);
+    }
+
+    public void listadoLibrosPrestados(PrintStream out){
+        out.println("LibrosPrestados: ");
+        out.printf("| %-15s | %-15s | %-15s | %-15s | %n", "ISBN", "TITULO", "AUTOR", "ESTADO");
         int auxLibros = 0;
         List<Libro> auxLib = new ArrayList<>();
         for(Libro l : libros){
@@ -99,33 +107,72 @@ public class Biblioteca {
             }
         }
         if(auxLibros == libros.size()){
-            System.out.println("No hay prestamos activos");
+            out.println("No hay prestamos activos");
             return;
         }
         for(Libro l : auxLib){
-            System.out.println(l.toString());
+            out.println(l.toString());
         }
     }
 
     public void listadoUsuarios(){
-        System.out.println("Usuarios: ");
-        System.out.printf("| %-5s | %-15s | %-15s | %-15s | %-15s | %n", "ID", "NOMBRE", "APELLIDO", "DOCUMENTO", "ROL");
+        listadoUsuarios(System.out);
+    }
+
+    public void listadoUsuarios(PrintStream out){
+        out.println("Usuarios: ");
+        out.printf("| %-5s | %-15s | %-15s | %-15s | %-15s | %n", "ID", "NOMBRE", "APELLIDO", "DOCUMENTO", "ROL");
         for(Usuario u : usuarios){
-            System.out.println(u.toString() + u.getRol() + " |");
+            out.println(u.toString() + u.getRol() + " |");
         }
     }
 
     public void listadoMultas(){
-        System.out.println("Multas: ");
-        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %n", "ID", "LIBRO PRESTADO", "USUARIO", "RETRASO", "VALORDIA", "TOTAL");
+        listadoMultas(System.out);
+    }
+
+    public void listadoMultas(PrintStream out){
+        out.println("Multas: ");
+        out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %n", "ID", "LIBRO PRESTADO", "USUARIO", "RETRASO", "VALORDIA", "TOTAL");
         if(multas.isEmpty()){
-            System.out.println("No hay multas registradas");
+            out.println("No hay multas registradas");
             return;
         }
         for(Multa m : multas){
-            System.out.println(m.toString());
+            out.println(m.toString());
         }
     }
 
+    public void exportarLibrosTxt() throws IOException {
+        try (PrintStream ps = new PrintStream(new FileOutputStream("libros.txt"))) {
+            listaLibros(ps);
+        }
+    }
+
+    public void exportarUsuariosTxt() throws IOException {
+        try (PrintStream ps = new PrintStream(new FileOutputStream("usuarios.txt"))) {
+            listadoUsuarios(ps);
+        }
+    }
+
+    public void exportarMultasTxt() throws IOException {
+        try (PrintStream ps = new PrintStream(new FileOutputStream("multas.txt"))) {
+            listadoMultas(ps);
+        }
+    }
+
+    public void exportarReporteCompletoTxt() throws IOException {
+        try (PrintStream ps = new PrintStream(new FileOutputStream("biblioteca.txt"))) {
+            ps.println(" REPORTE BIBLIOTECA ");
+            ps.println();
+            listaLibros(ps);
+            ps.println();
+            listadoLibrosPrestados(ps);
+            ps.println();
+            listadoUsuarios(ps);
+            ps.println();
+            listadoMultas(ps);
+        }
+    }
 
 }

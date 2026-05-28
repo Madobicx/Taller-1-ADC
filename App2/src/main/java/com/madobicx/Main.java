@@ -3,18 +3,28 @@ package com.madobicx;
 
 import com.madobicx.servicio.Biblioteca;
 
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
 
         Biblioteca biblioteca = new Biblioteca();
 
-        // Carga los datos predefinidos (libros, usuarios, préstamos)
         biblioteca.cargarDatosPredefinidos();
 
-        // Genera los 4 informes solicitados
         biblioteca.listaLibros();
         biblioteca.listadoUsuarios();
         biblioteca.listadoLibrosPrestados();
         biblioteca.listadoMultas();
+
+        try{
+            biblioteca.exportarLibrosTxt();
+            biblioteca.exportarUsuariosTxt();
+            biblioteca.exportarMultasTxt();
+            biblioteca.exportarReporteCompletoTxt();
+            System.out.println("Documentos generados correctamente");
+        }catch(IOException e){
+            System.out.println("Error generando los archivos: " + e.getMessage());
+        }
     }
 }
